@@ -28,31 +28,49 @@ class Module2:
         btn_frame = ttk.Frame(window)
         btn_frame.pack(side="bottom", fill="x", pady=5)
 
-        self.text_field(window)
+        text_frame = ttk.Frame(
+            window, 
+            borderwidth=1, 
+            relief=SOLID, 
+            padding=[8, 10]
+        )
+        text_frame.pack(fill="x", padx=10, pady=10)
+        self.text_field(text_frame)
 
         for el in self.BUTTONS:
             self.btn_func(
-                frame=btn_frame, 
+                btn_frame=btn_frame, 
                 wnd=window, 
                 txt=el
             )
         window.grab_set()
 
 
-    def text_field(self, wnd):
-        self.editor = Text(wnd)
-        self.editor.pack(fill=BOTH, expand=1)
+    def text_field(self, frame):
+        name_label = ttk.Label(
+            frame, 
+            text="Write your message"
+        )
+        name_label.pack(anchor=NW)
+    
+        self.editor = Text(frame)
+        self.editor.pack(
+            fill=BOTH, 
+            expand=1, 
+            pady=(5, 0)
+        )
 
     def on_click_y(self, wnd, option: str):
         if option == 'Так':
             data = self.editor.get("1.0", "end-1c")
-            if self.on_cfm:
-                self.on_cfm(data)
+            if data != "" or data != None:
+                if self.on_cfm:
+                    self.on_cfm(data)
         self.dsmiss(wnd)
 
-    def btn_func(self, frame, wnd, txt: str):
+    def btn_func(self, btn_frame, wnd, txt: str):
         button = ttk.Button(
-            frame, text=txt, 
+            btn_frame, text=txt, 
             command=lambda: self.on_click_y(wnd, txt)
         )
         button.pack(side="bottom", pady=5)
