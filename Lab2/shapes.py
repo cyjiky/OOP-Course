@@ -39,3 +39,6 @@ class Storage:
 
     def __iter__(self):
         return iter(self._shapes)
+
+    def clear(self):
+        self._shapes.clear()
