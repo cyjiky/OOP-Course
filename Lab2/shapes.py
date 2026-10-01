@@ -1,5 +1,6 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import List, Tuple
+from typing import List, Tuple, Iterator
 
 from tkinter import Canvas
 
@@ -34,11 +35,11 @@ class Storage:
 
         self._shapes.append(other)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self._shapes)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Shape]:
         return iter(self._shapes)
 
-    def clear(self):
+    def clear(self) -> None:
         self._shapes.clear()

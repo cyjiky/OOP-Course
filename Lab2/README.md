@@ -65,42 +65,45 @@
 
 ---
 
-### Схема успадкування класів (UML)
+### Схема успадкування
 
-```mermaid 
-classDiagram
-  class Shape {
-    - int start_x
-    - int start_y
-    - int dx
-    - int dy
-    + Set(int start_x, int start_y, int dx, int dy)
-    + Show(canvas)
-  }
+```mermaid
+flowchart TD
+  subgraph app["main"]
+    entry["Entry Point"]
+  end 
+
+  subgraph menu["menu.py"]
+    MenuClass["class MenuClass"]
+  end 
+
+  subgraph info["info.py"]
+    InfoWindow["class InfoWindow"]
+  end 
+
+  subgraph shapes["shapes.py"]
+    Storage["class Shape (ABC)"]
+  end 
+
+  subgraph figures["figures.py"]
+    PointClass["class Point"]
+    LineClass["class Line"]
+    RectClass["class Rectangle"]
+    EllipseClass["class Ellipse"]
+  end 
+
+  entry --> Storage 
+  entry --> MenuClass 
+  entry --> InfoWindow
+
   
-  class Point {
-    +Show(canvas)
-  }
-
-  class Line {
-    +Show(canvas)
-  }
-
-  class Rectangle {
-    +Show(canvas)
-  }
-
-  class Ellipse {
-    +Show(canvas)
-  }
-
-  Shape <|-- Point
-  Shape <|-- Line
-  Shape <|-- Rectangle
-  Shape <|-- Ellipse
+  Storage --> PointClass
+  Storage --> LineClass
+  Storage --> RectClass
+  Storage --> EllipseClass
 ```
 
----
+### Структура проекту
 
 ```text 
 📁Lab2

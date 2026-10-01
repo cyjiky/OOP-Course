@@ -6,7 +6,7 @@ class InfoWindow:
         self.dsmiss = dsmiss
         self.main_func()
 
-    def main_func(self):
+    def main_func(self) -> None:
         window = Toplevel()
         window.title('Довідка')
         window.geometry("300x200")

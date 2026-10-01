@@ -11,7 +11,7 @@ class MenuClass:
         self.info_fnc = info_fnc
         self.build_menu()
 
-    def build_menu(self):
+    def build_menu(self) -> None:
         main_menu = Menu(self.root)
         obj_menu = Menu(main_menu)
         file_menu = Menu(main_menu)

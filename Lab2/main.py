@@ -1,6 +1,4 @@
-from __future__ import annotations
 from tkinter import *
-from tkinter import ttk
 from shapes import Storage
 from figures import Point, Line, Rectangle, Ellipse
 
@@ -16,14 +14,27 @@ root.geometry("500x300")
 
 root.option_add("*tearOff", FALSE)
 
-canvas = Canvas(bg="white", width=550, height=330, relief="groove", bd=1)
-canvas.pack(fill=BOTH, expand=True, padx=10, pady=10)
+canvas = Canvas(
+    bg="white", 
+    width=550, 
+    height=330, 
+    relief="groove", 
+    bd=1
+)
+canvas.pack(
+    fill=BOTH, 
+    expand=True, 
+    padx=10, 
+    pady=10
+)
+
+ShapeType = type[Point | Line | Rectangle | Ellipse]
 
 storage = Storage()
-curr = None
-curr_name = ""
+curr: ShapeType | None = None
+curr_name: str = ""
 start_x, start_y = 0, 0
-is_drawing = False
+is_drawing: bool = False
 
 OBJ = {
     'Крапка': Point,
@@ -49,7 +60,13 @@ def clear_wnd() -> None:
 def info_func() -> None:
     InfoWindow(dsmiss=dismiss) 
 
-MenuClass(root=root, obj=OBJ, set_fnc=set_obj, clear_fnc=clear_wnd, info_fnc=info_func)
+MenuClass(
+    root=root, 
+    obj=OBJ, 
+    set_fnc=set_obj, 
+    clear_fnc=clear_wnd, 
+    info_fnc=info_func
+)
 
 def on_press(new) -> None: 
     global start_x, start_y, is_drawing
@@ -63,9 +80,7 @@ def on_motion(new) -> None:
     canvas.delete("rubber_band")
     cur_x, cur_y = new.x, new.y
 
-    if curr == Point:
-        pass 
-    elif curr == Line:
+    if curr == Line:
         canvas.create_line(
             start_x, start_y,
             cur_x, cur_y,
@@ -91,17 +106,19 @@ def on_motion(new) -> None:
             tags="rubber_band"
         )
 
-def on_release(new):
+def on_release(new) -> None:
     global is_drawing
     if not is_drawing or not curr:
-        return 
+        return None
 
     canvas.delete('rubber_band')
     is_drawing = False
 
     dx, dy = new.x, new.y
 
-    instance = curr(start_x, start_y, dx, dy)
+    instance = curr(
+        start_x, start_y, dx, dy
+    )
 
     try:
         storage.add(instance)
