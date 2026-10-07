@@ -2,7 +2,9 @@ from tkinter import *
 from shapes import Storage
 from figures import Point, Line, Rectangle, Ellipse
 
+from info import InfoWindow
 from menu import MenuClass
+from toolbar import ToolbarClass
 
 
 TITLE = 'Графічний редактор'
@@ -12,6 +14,13 @@ root.title(TITLE)
 root.geometry("500x300") 
 
 root.option_add("*tearOff", FALSE)
+
+logo = PhotoImage(file="./icons/point.png")
+logo_1 = PhotoImage(file="./icons/line.png")
+logo_2 = PhotoImage(file="./icons/rectangle.png")
+logo_3 = PhotoImage(file="./icons/ellipse.png")
+
+ToolbarClass(root, logo, logo_1, logo_2, logo_3)
 
 canvas = Canvas(
     bg="white", 
@@ -56,11 +65,15 @@ def clear_wnd() -> None:
     storage.clear()
     canvas.delete('all')
 
+def info_func() -> None:
+    InfoWindow(dsmiss=dismiss) 
+
 MenuClass(
     root=root, 
     obj=OBJ, 
     set_fnc=set_obj, 
     clear_fnc=clear_wnd, 
+    info_fnc=info_func
 )
 
 def on_press(new) -> None: 
@@ -83,19 +96,19 @@ def on_motion(new) -> None:
             tags="rubber_band"
         )
     elif curr == Rectangle:
-        x2 = 2 * start_x - cur_x
-        y2 = 2 * start_y - cur_y
         canvas.create_rectangle(
+            start_x, start_y,
             cur_x, cur_y,
-            x2, y2,
 
             outline="black",
             tags="rubber_band"
         )
     elif curr == Ellipse:
+        x2 = 2 * start_x - cur_x
+        y2 = 2 * start_y - cur_y
         canvas.create_oval(
-            start_x, start_y,
             cur_x, cur_y,
+            x2, y2,
 
             outline="black",
             tags="rubber_band"
