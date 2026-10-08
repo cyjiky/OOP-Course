@@ -20,7 +20,20 @@ logo_1 = PhotoImage(file="./icons/line.png")
 logo_2 = PhotoImage(file="./icons/rectangle.png")
 logo_3 = PhotoImage(file="./icons/ellipse.png")
 
-ToolbarClass(root, logo, logo_1, logo_2, logo_3)
+OBJ = {
+    'Крапка': Point,
+    'Лінія': Line,
+    'Прямокутник': Rectangle,
+    'Еліпс': Ellipse,
+}
+
+def set_obj(name) -> None:
+    global curr, curr_name
+    curr = OBJ.get(name)
+    curr_name = name
+    root.title(f'{TITLE} - {name}')
+
+ToolbarClass(root, OBJ, set_obj, logo, logo_1, logo_2, logo_3)
 
 canvas = Canvas(
     bg="white", 
@@ -44,22 +57,10 @@ curr_name: str = ""
 start_x, start_y = 0, 0
 is_drawing: bool = False
 
-OBJ = {
-    'Крапка': Point,
-    'Лінія': Line,
-    'Прямокутник': Rectangle,
-    'Еліпс': Ellipse,
-}
 
 def dismiss(window) -> None:
     window.grab_release() 
     window.destroy()
-
-def set_obj(name) -> None:
-    global curr, curr_name
-    curr = OBJ.get(name)
-    curr_name = name
-    root.title(f'{TITLE} - {name}')
 
 def clear_wnd() -> None:
     storage.clear()
