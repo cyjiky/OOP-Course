@@ -3,9 +3,8 @@ from shapes import Storage
 from figures import Point, Line, Rectangle, Ellipse
 
 from info import InfoWindow
-from menu import MenuClass
-from toolbar import ToolbarClass
-
+from widgets.menu import MenuClass
+from widgets.toolbar import ToolbarClass
 
 TITLE = 'Графічний редактор'
 
@@ -15,10 +14,10 @@ root.geometry("500x300")
 
 root.option_add("*tearOff", FALSE)
 
-logo = PhotoImage(file="./icons/point.png")
-logo_1 = PhotoImage(file="./icons/line.png")
-logo_2 = PhotoImage(file="./icons/rectangle.png")
-logo_3 = PhotoImage(file="./icons/ellipse.png")
+logo_point = PhotoImage(file="./icons/point.png")
+logo_line = PhotoImage(file="./icons/line.png")
+logo_rectangle = PhotoImage(file="./icons/rectangle.png")
+logo_ellipse = PhotoImage(file="./icons/ellipse.png")
 
 OBJ = {
     'Крапка': Point,
@@ -33,7 +32,7 @@ def set_obj(name) -> None:
     curr_name = name
     root.title(f'{TITLE} - {name}')
 
-ToolbarClass(root, OBJ, set_obj, logo, logo_1, logo_2, logo_3)
+ToolbarClass(root, OBJ, set_obj, logo_point, logo_line, logo_rectangle, logo_ellipse)
 
 canvas = Canvas(
     bg="white", 

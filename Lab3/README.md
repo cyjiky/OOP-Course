@@ -62,8 +62,11 @@ Oтримати вміння та навички використовувати 
 
 ```text 
 ./ 
+├── icons/
+├── widgets/
+│   ├── menu.py
+│   └── toolbar.py
 ├── main.py
-├── menu.py
 ├── info.py
 ├── shapes.py
 ├── figures.py
