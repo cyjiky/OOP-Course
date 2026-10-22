@@ -20,15 +20,16 @@ logo_rectangle = PhotoImage(file="./icons/rectangle.png")
 logo_ellipse = PhotoImage(file="./icons/ellipse.png")
 
 OBJ = {
-    'Крапка': Point,
-    'Лінія': Line,
-    'Прямокутник': Rectangle,
-    'Еліпс': Ellipse,
+    'Крапка': {'command': Point, 'img': logo_point},
+    'Лінія': {'command': Line, 'img': logo_line},
+    'Прямокутник': {'command': Rectangle, 'img': logo_rectangle},
+    'Еліпс': {'command': Ellipse, 'img': logo_ellipse},
 }
 
-def set_obj(name) -> None:
+def set_obj(name: str = None) -> None:
     global curr, curr_name
-    curr = OBJ.get(name)
+    obj_data = OBJ.get(name, {})
+    curr = obj_data.get('command')
     curr_name = name
     root.title(f'{TITLE} - {name}')
 

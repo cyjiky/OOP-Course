@@ -2,38 +2,62 @@ from __future__ import annotations
 from tkinter import *
 from tkinter import ttk
 
+# https://www.tutorialspoint.com/article/how-do-i-display-tooltips-in-tkinter
+class ToolTip:
+    def __init__(self, widget, text):
+        self.widget = widget
+        self.text = text
+        self.tooltip = None
+        self.widget.bind("<Enter>", self.show_tooltip)
+        self.widget.bind("<Leave>", self.hide_tooltip)
+    
+    def show_tooltip(self, event):
+        x = self.widget.winfo_rootx() + 20
+        y = self.widget.winfo_rooty() + 20
+        
+        self.tooltip = Toplevel()
+        self.tooltip.wm_overrideredirect(True)
+        self.tooltip.wm_geometry(f"+{x}+{y}")
+        
+        label = Label(self.tooltip, text=self.text, # background="lightyellow",
+            relief="solid", borderwidth=1,
+            font=("Arial", 8))
+        label.pack()
+    
+    def hide_tooltip(self, event):
+        if self.tooltip:
+            self.tooltip.destroy()
+            self.tooltip = None
+
+
 class ToolbarClass:
     def __init__(self, root, obj_arr, set_fnc, logo, logo_1, logo_2, logo_3):
         self.root = root
         self.OBJ = obj_arr
         self.set_obj = set_fnc
+
         self.logo = logo
         self.logo_1 = logo_1
         self.logo_2 = logo_2
         self.logo_3 = logo_3
+        
         self.main_func()
 
-    def toolbar_commads(self, button):
-        tab_index = button.widget.index("current")
-        val = list(self.OBJ.keys())[tab_index]
-        self.set_obj(val)
+    def btn_func(self, root, img = None, tip: str = None, comm = None) -> None:
+        button = ttk.Button(
+            root, image=img, command=comm
+        )
+        button.pack(side='top', anchor='w', padx=5, pady=5)
+        ToolTip(button, tip)
 
     def main_func(self) -> None:
-        toolbar = ttk.Notebook(self.root)
-        toolbar.pack(fill=X)
-
-        frame = ttk.Frame(toolbar)
-        frame_1 = ttk.Frame(toolbar)
-        frame_2 = ttk.Frame(toolbar)
-        frame_3 = ttk.Frame(toolbar)
-
-        frame.pack(fill=BOTH, expand=True)
-        frame_1.pack(fill=BOTH, expand=True)
-        frame_2.pack(fill=BOTH, expand=True)
-        frame_3.pack(fill=BOTH, expand=True)
-        toolbar.add(frame, image=self.logo, compound=LEFT)  # point
-        toolbar.add(frame_1, image=self.logo_1, compound=LEFT)  # line
-        toolbar.add(frame_2, image=self.logo_2, compound=LEFT)  # rectangle
-        toolbar.add(frame_3, image=self.logo_3, compound=LEFT)  # ellipse
-
-        toolbar.bind("<<NotebookTabChanged>>", self.toolbar_commads)
+        frame = ttk.Frame(self.root)
+        frame.pack(side=LEFT, fill=Y, padx=5, pady=5)
+        
+        for info, val in self.OBJ.items():
+            self.btn_func(
+                root=frame, 
+                img=self.OBJ[info]['img'], 
+                tip=info, 
+                comm=lambda name=info: self.set_obj(name)
+            )
