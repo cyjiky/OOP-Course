@@ -1,7 +1,7 @@
 from __future__ import annotations
 import sys
 from pathlib import Path 
-from typing import *
+from typing import Type
 from tkinter import *
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -38,16 +38,16 @@ class MainClass:
 
         self.storage = Storage()
         self.curr: ShapeType | None = None
-        # self.curr_name: str = ""
         self.start_x: int = 0 
         self.start_y: int = 0
         self.is_drawing: bool = False
-        # self.curr_tool: StringVar = StringVar(value='')
+        self.curr_tool: StringVar = StringVar(value='')
 
         self.toolbar_class = ToolbarClass(
             root, 
             self.OBJ, 
             self.set_obj,
+            curr_tool=self.curr_tool
         )
 
         self.canvas = Canvas(
@@ -70,6 +70,7 @@ class MainClass:
             set_fnc=self.set_obj, 
             clear_fnc=self.clear_wnd, 
             info_fnc=self.info_func,
+            curr_tool=self.curr_tool
         )
 
         self.canvas.bind("<Button-1>", self.on_press)
@@ -79,7 +80,6 @@ class MainClass:
     def set_obj(self, name: str = None, curr_tool: StringVar = '') -> None:
         obj_data = self.OBJ.get(name, {})
         self.curr = obj_data.get('command')
-        # self.curr_name = name
         if curr_tool:
             curr_tool.set(name)
 
@@ -101,11 +101,11 @@ class MainClass:
     def info_func(self) -> None:
         InfoWindow(dsmiss=self.dismiss) 
 
-    def on_press(self, new) -> None: 
+    def on_press(self, new: Event[Canvas]) -> None: 
         self.start_x, self.start_y = new.x, new.y
         self.is_drawing = True
 
-    def on_motion(self, new) -> None:
+    def on_motion(self, new: Event[Canvas]) -> None:
         if not self.is_drawing or not self.curr:
             return None
         
@@ -138,7 +138,7 @@ class MainClass:
                 tags="rubber_band"
             )
 
-    def on_release(self, new) -> None:
+    def on_release(self, new: Event[Canvas]) -> None:
         if not self.is_drawing or not self.curr:
             return None
 

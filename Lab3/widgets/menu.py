@@ -3,13 +3,13 @@ from tkinter import ttk
 
 class MenuClass:
 
-    def __init__(self, root, obj, set_fnc, clear_fnc=None, info_fnc=None):
+    def __init__(self, root, obj, set_fnc, clear_fnc=None, info_fnc=None, curr_tool: StringVar = ''):
         self.root = root 
         self.OBJ = obj 
         self.set_obj = set_fnc
         self.clear_fnc = clear_fnc
         self.info_fnc = info_fnc
-        self.curr_tool = StringVar(value='')
+        self.curr_tool = curr_tool
         self.build_menu()
 
     def build_menu(self) -> None:

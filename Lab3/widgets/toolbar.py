@@ -4,18 +4,18 @@ from tkinter import ttk
 
 # https://www.tutorialspoint.com/article/how-do-i-display-tooltips-in-tkinter
 class ToolTip:
-    def __init__(self, widget, text):
+    def __init__(self, widget: Widget, text):
         self.widget = widget
         self.text = text
         self.tooltip = None
         self.widget.bind("<Enter>", self.show_tooltip)
         self.widget.bind("<Leave>", self.hide_tooltip)
     
-    def show_tooltip(self, event):
+    def show_tooltip(self, event: Widget) -> None:
         x = self.widget.winfo_rootx() + 20
         y = self.widget.winfo_rooty() + 20
         
-        self.tooltip = Toplevel()
+        self.tooltip: Toplevel = Toplevel()
         self.tooltip.wm_overrideredirect(True)
         self.tooltip.wm_geometry(f"+{x}+{y}")
         
@@ -24,18 +24,18 @@ class ToolTip:
             font=("Arial", 8))
         label.pack()
     
-    def hide_tooltip(self, event):
+    def hide_tooltip(self, event: Widget) -> None:
         if self.tooltip:
             self.tooltip.destroy()
             self.tooltip = None
 
 
 class ToolbarClass:
-    def __init__(self, root, obj_arr, set_fnc):
+    def __init__(self, root, obj_arr, set_fnc, curr_tool: StringVar = ''):
         self.root = root
         self.OBJ = obj_arr
         self.set_obj = set_fnc
-        self.curr_tool = StringVar(value='')
+        self.curr_tool = curr_tool
 
         self.main_func()
 
