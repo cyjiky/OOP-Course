@@ -31,16 +31,12 @@ class ToolTip:
 
 
 class ToolbarClass:
-    def __init__(self, root, obj_arr, set_fnc, logo, logo_1, logo_2, logo_3):
+    def __init__(self, root, obj_arr, set_fnc):
         self.root = root
         self.OBJ = obj_arr
         self.set_obj = set_fnc
+        self.curr_tool = StringVar(value='')
 
-        self.logo = logo
-        self.logo_1 = logo_1
-        self.logo_2 = logo_2
-        self.logo_3 = logo_3
-        
         self.main_func()
 
     def btn_func(self, root, img = None, tip: str = None, comm = None) -> None:
@@ -54,10 +50,10 @@ class ToolbarClass:
         frame = ttk.Frame(self.root)
         frame.pack(side=LEFT, fill=Y, padx=5, pady=5)
         
-        for info, val in self.OBJ.items():
+        for info in self.OBJ.keys():
             self.btn_func(
                 root=frame, 
                 img=self.OBJ[info]['img'], 
                 tip=info, 
-                comm=lambda name=info: self.set_obj(name)
+                comm=lambda name=info, ct=self.curr_tool: self.set_obj(name=name, curr_tool=ct)
             )

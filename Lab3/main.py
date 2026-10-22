@@ -1,143 +1,163 @@
+from __future__ import annotations
+import sys
+from pathlib import Path 
+from typing import *
 from tkinter import *
+
+BASE_DIR = Path(__file__).resolve().parent
+
 from shapes import Storage
 from figures import Point, Line, Rectangle, Ellipse
-
 from info import InfoWindow
 from widgets.menu import MenuClass
 from widgets.toolbar import ToolbarClass
 
 TITLE = 'Графічний редактор'
-
-root = Tk()
-root.title(TITLE)
-root.geometry("500x300") 
-
-root.option_add("*tearOff", FALSE)
-
-logo_point = PhotoImage(file="./icons/point.png")
-logo_line = PhotoImage(file="./icons/line.png")
-logo_rectangle = PhotoImage(file="./icons/rectangle.png")
-logo_ellipse = PhotoImage(file="./icons/ellipse.png")
-
-OBJ = {
-    'Крапка': {'command': Point, 'img': logo_point},
-    'Лінія': {'command': Line, 'img': logo_line},
-    'Прямокутник': {'command': Rectangle, 'img': logo_rectangle},
-    'Еліпс': {'command': Ellipse, 'img': logo_ellipse},
-}
-
-def set_obj(name: str = None) -> None:
-    global curr, curr_name
-    obj_data = OBJ.get(name, {})
-    curr = obj_data.get('command')
-    curr_name = name
-    root.title(f'{TITLE} - {name}')
-
-ToolbarClass(root, OBJ, set_obj, logo_point, logo_line, logo_rectangle, logo_ellipse)
-
-canvas = Canvas(
-    bg="white", 
-    width=550, 
-    height=330, 
-    relief="groove", 
-    bd=1
-)
-canvas.pack(
-    fill=BOTH, 
-    expand=True, 
-    padx=10, 
-    pady=10
-)
-
 ShapeType = type[Point | Line | Rectangle | Ellipse]
 
-storage = Storage()
-curr: ShapeType | None = None
-curr_name: str = ""
-start_x, start_y = 0, 0
-is_drawing: bool = False
+class MainClass:
+    def __init__(self, root: Tk):
+        self.root = root 
+        self.root.title(TITLE)
+        self.root.geometry("500x300") 
+        self.root.option_add("*tearOff", FALSE)
 
+        self.logo_point = PhotoImage(file="./icons/point.png")
+        self.logo_line = PhotoImage(file="./icons/line.png")
+        self.logo_rectangle = PhotoImage(file="./icons/rectangle.png")
+        self.logo_ellipse = PhotoImage(file="./icons/ellipse.png")
 
-def dismiss(window) -> None:
-    window.grab_release() 
-    window.destroy()
+        self.OBJ = {
+            'Крапка': {'command': Point, 'img': self.logo_point},
+            'Лінія': {'command': Line, 'img': self.logo_line},
+            'Прямокутник': {'command': Rectangle, 'img': self.logo_rectangle},
+            'Еліпс': {'command': Ellipse, 'img': self.logo_ellipse},
+        }
 
-def clear_wnd() -> None:
-    storage.clear()
-    canvas.delete('all')
+        self.ShapeType = type[Point | Line | Rectangle | Ellipse]
 
-def info_func() -> None:
-    InfoWindow(dsmiss=dismiss) 
+        self.storage = Storage()
+        self.curr: ShapeType | None = None
+        # self.curr_name: str = ""
+        self.start_x: int = 0 
+        self.start_y: int = 0
+        self.is_drawing: bool = False
+        # self.curr_tool: StringVar = StringVar(value='')
 
-MenuClass(
-    root=root, 
-    obj=OBJ, 
-    set_fnc=set_obj, 
-    clear_fnc=clear_wnd, 
-    info_fnc=info_func
-)
-
-def on_press(new) -> None: 
-    global start_x, start_y, is_drawing
-    start_x, start_y = new.x, new.y
-    is_drawing = True
-
-def on_motion(new) -> None:
-    if not is_drawing or not curr:
-        return None
-    
-    canvas.delete("rubber_band")
-    cur_x, cur_y = new.x, new.y
-
-    if curr == Line:
-        canvas.create_line(
-            start_x, start_y,
-            cur_x, cur_y,
-            fill="black",
-            tags="rubber_band"
-        )
-    elif curr == Rectangle:
-        canvas.create_rectangle(
-            start_x, start_y,
-            cur_x, cur_y,
-
-            outline="black",
-            tags="rubber_band"
-        )
-    elif curr == Ellipse:
-        x2 = 2 * start_x - cur_x
-        y2 = 2 * start_y - cur_y
-        canvas.create_oval(
-            cur_x, cur_y,
-            x2, y2,
-
-            outline="black",
-            tags="rubber_band"
+        self.toolbar_class = ToolbarClass(
+            root, 
+            self.OBJ, 
+            self.set_obj,
         )
 
-def on_release(new) -> None:
-    global is_drawing
-    if not is_drawing or not curr:
-        return None
+        self.canvas = Canvas(
+            bg="white", 
+            width=550, 
+            height=330, 
+            relief="groove", 
+            bd=1
+        )
+        self.canvas.pack(
+            fill=BOTH, 
+            expand=True, 
+            padx=10, 
+            pady=10
+        )
 
-    canvas.delete('rubber_band')
-    is_drawing = False
+        self.menu_class = MenuClass(
+            root=root, 
+            obj=self.OBJ, 
+            set_fnc=self.set_obj, 
+            clear_fnc=self.clear_wnd, 
+            info_fnc=self.info_func,
+        )
 
-    dx, dy = new.x, new.y
+        self.canvas.bind("<Button-1>", self.on_press)
+        self.canvas.bind("<B1-Motion>", self.on_motion)
+        self.canvas.bind("<ButtonRelease-1>", self.on_release)
 
-    instance = curr(
-        start_x, start_y, dx, dy
-    )
+    def set_obj(self, name: str = None, curr_tool: StringVar = '') -> None:
+        obj_data = self.OBJ.get(name, {})
+        self.curr = obj_data.get('command')
+        # self.curr_name = name
+        if curr_tool:
+            curr_tool.set(name)
 
-    try:
-        storage.add(instance)
-        instance.draw(canvas)
-    except OverflowError as e:
-        print(e)
+        tool_value = curr_tool.get() if curr_tool else ''
+        root.title(f'{TITLE} - {tool_value}')
+        self.notify("TOOL_CHANGED", name)
 
-canvas.bind("<Button-1>", on_press)
-canvas.bind("<B1-Motion>", on_motion)
-canvas.bind("<ButtonRelease-1>", on_release)
+    def notify(self, message: str = None, *args) -> None:
+        pass 
+
+    def dismiss(self, window) -> None:
+        window.grab_release() 
+        window.destroy()
+
+    def clear_wnd(self) -> None:
+        self.storage.clear()
+        self.canvas.delete('all')
+
+    def info_func(self) -> None:
+        InfoWindow(dsmiss=self.dismiss) 
+
+    def on_press(self, new) -> None: 
+        self.start_x, self.start_y = new.x, new.y
+        self.is_drawing = True
+
+    def on_motion(self, new) -> None:
+        if not self.is_drawing or not self.curr:
+            return None
+        
+        self.canvas.delete("rubber_band")
+        cur_x, cur_y = new.x, new.y
+
+        if self.curr == Line:
+            self.canvas.create_line(
+                self.start_x, self.start_y,
+                cur_x, cur_y,
+                fill="black",
+                tags="rubber_band"
+            )
+        elif self.curr == Rectangle:
+            self.canvas.create_rectangle(
+                self.start_x, self.start_y,
+                cur_x, cur_y,
+
+                outline="black",
+                tags="rubber_band"
+            )
+        elif self.curr == Ellipse:
+            x2 = 2 * self.start_x - cur_x
+            y2 = 2 * self.start_y - cur_y
+            self.canvas.create_oval(
+                cur_x, cur_y,
+                x2, y2,
+
+                outline="black",
+                tags="rubber_band"
+            )
+
+    def on_release(self, new) -> None:
+        if not self.is_drawing or not self.curr:
+            return None
+
+        self.canvas.delete('rubber_band')
+        self.is_drawing = False
+
+        dx, dy = new.x, new.y
+
+        instance = self.curr(
+            self.start_x, self.start_y, dx, dy
+        )
+
+        try:
+            self.storage.add(instance)
+            instance.draw(self.canvas)
+        except OverflowError as e:
+            print(e)
 
 if __name__ == "__main__":
+    root = Tk()
+    app = MainClass(root)
     root.mainloop()

@@ -57,6 +57,52 @@ Oтримати вміння та навички використовувати 
 | Кольори заповнення еліпсу | Помаранчевий | $16 \pmod 6 = 4$ |
 | Позначка обраного інструмента | в меню (метод OnInitMenuPopup) | $16 \pmod 2 = 0$ |
 
+### Схема успадкування
+
+```mermaid
+flowchart TD
+  subgraph app["main"]
+    entry["MainClass"]
+  end 
+
+  subgraph menu["menu.py"]
+    MenuClass["class MenuClass"]
+  end 
+
+  subgraph toolbar["toolbar.py"]
+    ToolTip["class ToolTip"]
+    ToolbarClass["class ToolbarClass"]
+  end 
+
+  subgraph info["info.py"]
+    InfoWindow["class InfoWindow"]
+  end 
+
+  subgraph shapes["shapes.py"]
+    Shape["class Shape (ABC)"]
+    Storage["class Storage"]
+  end 
+
+  subgraph figures["figures.py"]
+    PointClass["class Point"]
+    LineClass["class Line"]
+    RectClass["class Rectangle"]
+    EllipseClass["class Ellipse"]
+  end 
+
+  entry --> Storage 
+  Storage --> Shape
+  entry --> MenuClass 
+  entry --> ToolbarClass 
+  ToolbarClass <--> ToolTip
+  entry --> InfoWindow
+
+  
+  Shape --> PointClass
+  Shape --> LineClass
+  Shape --> RectClass
+  Shape --> EllipseClass
+```
 
 ### Структура проєкту
 

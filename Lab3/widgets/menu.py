@@ -9,6 +9,7 @@ class MenuClass:
         self.set_obj = set_fnc
         self.clear_fnc = clear_fnc
         self.info_fnc = info_fnc
+        self.curr_tool = StringVar(value='')
         self.build_menu()
 
     def build_menu(self) -> None:
@@ -31,10 +32,12 @@ class MenuClass:
             )
 
         # obj_menu
-        for key, val in self.OBJ.items():
-            obj_menu.add_command(
+        for key in self.OBJ.keys():
+            obj_menu.add_radiobutton(
                 label=key, 
-                command=lambda name=key: self.set_obj(name)
+                variable=self.curr_tool,
+                value=key, 
+                comm=lambda name=key, ct=self.curr_tool: self.set_obj(name=name, curr_tool=ct)
             )
 
         # file_menu
