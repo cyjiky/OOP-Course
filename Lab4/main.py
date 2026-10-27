@@ -119,31 +119,56 @@ class MainClass:
         self.canvas.delete("rubber_band")
         cur_x, cur_y = new.x, new.y
 
-        if self.curr == Line or self.curr == LineConnector:
-            self.canvas.create_line(
-                self.start_x, self.start_y,
-                cur_x, cur_y,
-                dash=(4, 2), 
-                fill="black",
-                tags="rubber_band"
+        if self.curr == Line: 
+            temp_line = Line(
+                self.start_x, self.start_y, cur_x, cur_y
             )
-        elif self.curr == Rectangle or self.curr == Cube:
-            self.canvas.create_rectangle(
-                self.start_x, self.start_y,
-                cur_x, cur_y,
+            temp_line.draw(
+                self.canvas,
                 dash=(4, 2), 
-                outline="black",
-                tags="rubber_band"
+                fill="black", 
+                tags="rubber_band", 
+            )
+        elif self.curr == Rectangle:
+            temp_rectangle = Rectangle(
+                self.start_x, self.start_y, cur_x, cur_y
+            )
+            temp_rectangle.draw(
+                self.canvas,
+                dash=(4, 2),
+                tags="rubber_band",
+                fill=None
             )
         elif self.curr == Ellipse:
-            x2 = 2 * self.start_x - cur_x
-            y2 = 2 * self.start_y - cur_y
-            self.canvas.create_oval(
-                cur_x, cur_y,
-                x2, y2,
+            temp_ellipse = Ellipse(
+                self.start_x, self.start_y, cur_x, cur_y
+            )
+            temp_ellipse.draw(
+                self.canvas,
                 dash=(4, 2), 
                 outline="black",
+                tags="rubber_band",
+                fill=None
+            )
+        elif self.curr == Cube:
+            temp_cube = Cube(
+                self.start_x, self.start_y, cur_x, cur_y
+            )
+            temp_cube.draw(
+                self.canvas,
+                dash=(4, 2),
                 tags="rubber_band"
+            )
+        elif self.curr == LineConnector:
+            temp_lineConn = LineConnector(
+                self.start_x, self.start_y, cur_x, cur_y
+            )
+            temp_lineConn.draw(
+                self.canvas,
+                dash=(4, 2),
+                tags="rubber_band",
+                point_fill=None,
+                line_fill=None
             )
 
     def on_release(self, new: Event[Canvas]) -> None:

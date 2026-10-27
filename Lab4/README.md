@@ -36,6 +36,13 @@ Oтримати вміння та навички проектування кла
 
 ```text 
 ./ 
+├── icons/
+├── widgets/
+│   ├── menu.py
+│   └── toolbar.py
 ├── main.py
+├── info.py
+├── shapes.py
+├── figures.py
 └── README.md
 ```
