@@ -35,7 +35,7 @@ class Storage:
         if not isinstance(other, Shape):
             raise TypeError('...')
 
-        if len(self._shapes) > self.MAX:
+        if len(self._shapes) >= self.MAX:
             raise OverflowError('...')
 
         self._shapes.append(other)

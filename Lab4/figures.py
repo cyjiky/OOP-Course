@@ -102,9 +102,12 @@ class LineConnector(Line, Point):
         dy = y2 - y1 
         distance = math.hypot(dx, dy) # відстань між точками
 
-        new_x1 = x1 + r * (dx / distance)
-        new_y1 = y1 + r * (dy / distance)
-
+        if distance > 2 * r:
+            new_x1 = x1 + r * (dx / distance)
+            new_y1 = y1 + r * (dy / distance)
+        else: 
+            return None 
+        
         _old_coords = self.coords
         self.coords = (new_x1, new_y1, x2, y2)
         Line.draw(
@@ -149,8 +152,8 @@ class Cube(Rectangle, Line):
         )
 
         _old_coords = self.coords
-        arr_1 = [(x1, y1), (x2, y1), (x2, y1), (x2, y2)]
-        arr_2 = [(x1_2, y1_2), (x2_2, y1_2), (x2_2, y1_2), (x2_2, y2_2)]
+        arr_1 = [(x1, y1), (x2, y1), (x2, y2), (x1, y2)]
+        arr_2 = [(x1_2, y1_2), (x2_2, y1_2), (x2_2, y2_2), (x1_2, y2_2)]
 
         for (c1_x, c1_y), (c2_x, c2_y) in zip(arr_1, arr_2):
             self.coords = (c1_x, c1_y, c2_x, c2_y)

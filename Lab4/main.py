@@ -37,8 +37,8 @@ class MainClass:
             'Лінія': {'command': Line, 'img': self.logo_line},
             'Прямокутник': {'command': Rectangle, 'img': self.logo_rectangle},
             'Еліпс': {'command': Ellipse, 'img': self.logo_ellipse},
-            'LineConnector': {'command': LineConnector, 'img': self.line_connector},
-            'Cube': {'command': Cube, 'img': self.logo_cube},
+            'Лінія з кружечками': {'command': LineConnector, 'img': self.line_connector},
+            'Куб': {'command': Cube, 'img': self.logo_cube},
         }
 
         self.ShapeType = type[Point | Line | Rectangle | Ellipse]
