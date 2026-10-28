@@ -26,28 +26,25 @@ class PointsShape(Shape):
             self.org_x, self.org_y, self.dx, self.dy = new_coords
             
 class Storage:
-    MAX: int = 116
+    MAX: int = 115 
 
     def __init__(self): 
-        self._shapes: List[Shape | None] = [None] * self.MAX
-        self._count: int = 0
+        self._shapes: List[Shape] = []
 
     def add(self, other: Shape) -> None:
         if not isinstance(other, Shape):
-            raise TypeError('Expected Shape')
+            raise TypeError('...')
 
-        if self._count >= self.MAX:
-            raise OverflowError('Storage is full')
+        if len(self._shapes) > self.MAX:
+            raise OverflowError('...')
 
-        self._shapes[self._count] = other
-        self._count += 1 
+        self._shapes.append(other)
 
     def __len__(self) -> int:
-        return self._count
+        return len(self._shapes)
 
     def __iter__(self) -> Iterator[Shape]:
-        return iter(self._shapes[:self._count])
+        return iter(self._shapes)
 
     def clear(self) -> None:
-        self._shapes = [None] * self.MAX
-        self._count = 0
+        self._shapes.clear()
