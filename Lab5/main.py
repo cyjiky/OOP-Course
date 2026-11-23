@@ -15,7 +15,7 @@ from figures import (
 from info import InfoWindow
 from widgets.menu import MenuClass
 from widgets.toolbar import ToolbarClass
-from Lab5.widgets.table import TableClass
+from widgets.table import TableClass
 
 TITLE = 'Графічний редактор'
 ShapeType = type[Point | Line | Rectangle | Ellipse]
@@ -86,6 +86,12 @@ class MainClass(metaclass=SingletonMeta):
             pady=10
         )
 
+        self.table_class = TableClass(
+            root=root,
+            coords=(0, 0, 0, 0),
+            tools=[]
+        )
+
         self.menu_class = MenuClass(
             root=root, 
             obj=self.OBJ, 
@@ -93,12 +99,7 @@ class MainClass(metaclass=SingletonMeta):
             clear_fnc=self.clear_wnd, 
             info_fnc=self.info_func,
             curr_tool=self.curr_tool,
-        )
-
-        self.table_class = self.TableClass(
-            root=root,
-            arr_data=(), 
-            tools=[]
+            table_fnc=self.table_class.toggle
         )
 
         self.canvas.bind("<Button-1>", self.on_press)
@@ -112,7 +113,7 @@ class MainClass(metaclass=SingletonMeta):
             curr_tool.set(name)
 
         tool_value = curr_tool.get() if curr_tool else ''
-        root.title(f'{TITLE} - {tool_value}')
+        self.root.title(f'{TITLE} - {tool_value}')
         self.notify("TOOL_CHANGED", name)
 
     def notify(self, message: str = None, *args) -> None:
@@ -125,6 +126,7 @@ class MainClass(metaclass=SingletonMeta):
     def clear_wnd(self) -> None:
         self.storage.clear()
         self.canvas.delete('all')
+        self.table_class.clear()
 
     def info_func(self) -> None:
         InfoWindow(dsmiss=self.dismiss) 
@@ -207,7 +209,9 @@ class MainClass(metaclass=SingletonMeta):
 
         try:
             self.storage.add(instance)
-            instance.draw(self.canvas)
+            coords = instance.draw(self.canvas)
+            tool_name = self.curr_tool.get() or "Фігура"
+            self.table_class.add_row(tool=tool_name, coords=coords)
         except OverflowError as e:
             print(e)
 

@@ -11,7 +11,7 @@ class Point(PointsShape):
         radius: int = 2,
         dash: Tuple[int, int] | None = None,
         tags: str | None = None
-    ) -> None:
+    ) -> Tuple[int, int, int, int]:
         r = radius
         canvas.create_oval(
             self.org_x - r, 
@@ -23,6 +23,7 @@ class Point(PointsShape):
             tags=tags,
             dash=dash
         )
+        return (self.org_x, self.org_y, self.org_x, self.org_y)
 
 class Line(PointsShape):
     def draw(
@@ -31,13 +32,14 @@ class Line(PointsShape):
         fill: str | None = "purple",
         dash: Tuple[int, int] | None = None,
         tags: str | None = None,
-    ) -> None:
+    ) -> Tuple[int, int, int, int]:
         canvas.create_line(
             dash=dash,
             fill=fill,
             tags=tags, 
             *self.coords
         )
+        return self.coords
 
 
 class Ellipse(PointsShape):
@@ -48,7 +50,7 @@ class Ellipse(PointsShape):
         tags: str | None = None,
         outline: str | None = "black",
         fill: str | None = 'light sky blue'
-    ) -> None:
+    ) -> Tuple[int, int, int, int]:
         self.org_x, self.org_y, dx, dy = self.coords
         dx2 = 2 * self.org_x - dx 
         dy2 = 2 * self.org_y - dy
@@ -59,6 +61,7 @@ class Ellipse(PointsShape):
             outline=outline, 
             fill=fill
         )
+        return self.coords
 
 class Rectangle(PointsShape):
     def draw(
@@ -68,7 +71,7 @@ class Rectangle(PointsShape):
         dash: Tuple[int, int] | None = None,
         tags: str | None = None,
         outline: str | None = "black" 
-    ) -> None:
+    ) -> Tuple[int, int, int, int]:
         canvas.create_rectangle(
             *self.coords, 
             dash=dash, 
@@ -76,6 +79,7 @@ class Rectangle(PointsShape):
             outline=outline, 
             fill=fill
         )
+        return self.coords
 
 class LineConnector(Line, Point):
     def draw(
@@ -86,7 +90,7 @@ class LineConnector(Line, Point):
         dash: Tuple[int, int] | None = None,
         tags: str | None = None,
         r=8
-        ) -> None:
+        ) -> Tuple[int, int, int, int] | None:
         x1, y1, x2, y2 = self.coords
         self.org_x, self.org_y = x1, y1
         Point.draw(
@@ -94,7 +98,7 @@ class LineConnector(Line, Point):
             canvas, 
             radius=r, 
             fill=point_fill,
-            dash=dash,
+            dash=dash, 
             tags=tags
         )
 
@@ -131,6 +135,7 @@ class LineConnector(Line, Point):
             dash=dash, 
             tags=tags
         )
+        return _old_coords
 
 class Cube(Rectangle, Line):
     def draw(
@@ -138,7 +143,7 @@ class Cube(Rectangle, Line):
         canvas: Canvas,
         dash: Tuple[int, int] | None = None,
         tags: str | None = None,
-    ) -> None:
+    ) -> Tuple[int, int, int, int]:
         x1, y1, x2, y2 = self.coords
         
         offset_x, offset_y = 15, -15
@@ -175,3 +180,4 @@ class Cube(Rectangle, Line):
         )
         
         self.coords = _old_coords
+        return _old_coords
