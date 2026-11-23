@@ -2,14 +2,13 @@ from tkinter import *
 from tkinter import ttk
 
 class MenuClass:
-    def __init__(self, root, obj, set_fnc, clear_fnc=None, info_fnc=None, curr_tool: StringVar = '', table_fnc=None):
+    def __init__(self, root, obj, set_fnc, clear_fnc=None, info_fnc=None, curr_tool: StringVar = ''):
         self.root = root 
         self.OBJ = obj 
         self.set_obj = set_fnc
         self.clear_fnc = clear_fnc
         self.info_fnc = info_fnc
         self.curr_tool = curr_tool
-        self.table_fnc = table_fnc
         self.build_menu()
 
     def build_menu(self) -> None:
@@ -41,7 +40,7 @@ class MenuClass:
             )
 
         # file_menu
-        file_menu.add_command(label="Експорт до CSV", command=self.table_fnc(self.curr_tool)) ## TODO: command: self.table_fnc 
+        file_menu.add_command(label="Експорт до CSV", command=None) # TODO: command: self.table_fnc 
         file_menu.add_command(label="Очистити", command=self.clear_fnc)
         file_menu.add_separator()
         file_menu.add_command(label="Вихід", command=self.root.quit)

@@ -4,12 +4,7 @@ from typing import List, Tuple, Iterator
 
 from tkinter import Canvas
 
-class Shape(ABC):
-    @abstractmethod
-    def draw(self, canvas: Canvas):
-        pass 
-
-class PointsShape(Shape):
+class PointsShape(ABC):
     def __init__(self, start_x: int, start_y: int, x: int, y: int):
         self.org_x = start_x
         self.org_y = start_y
@@ -24,15 +19,19 @@ class PointsShape(Shape):
     def coords(self, new_coords: Tuple[int, int, int, int]) -> None: 
         if len(new_coords) == 4:
             self.org_x, self.org_y, self.dx, self.dy = new_coords
+
+    @abstractmethod
+    def draw(self, canvas: Canvas):
+        pass 
             
 class Storage:
     MAX: int = 115 
 
     def __init__(self): 
-        self._shapes: List[Shape] = []
+        self._shapes: List[PointsShape] = []
 
-    def add(self, other: Shape) -> None:
-        if not isinstance(other, Shape):
+    def add(self, other: PointsShape) -> None:
+        if not isinstance(other, PointsShape):
             raise TypeError('...')
 
         if len(self._shapes) >= self.MAX:
@@ -43,7 +42,7 @@ class Storage:
     def __len__(self) -> int:
         return len(self._shapes)
 
-    def __iter__(self) -> Iterator[Shape]:
+    def __iter__(self) -> Iterator[PointsShape]:
         return iter(self._shapes)
 
     def clear(self) -> None:

@@ -15,7 +15,7 @@ from figures import (
 from info import InfoWindow
 from widgets.menu import MenuClass
 from widgets.toolbar import ToolbarClass
-from widgets.table import printer
+from Lab5.widgets.table import TableClass
 
 TITLE = 'Графічний редактор'
 ShapeType = type[Point | Line | Rectangle | Ellipse]
@@ -93,7 +93,12 @@ class MainClass(metaclass=SingletonMeta):
             clear_fnc=self.clear_wnd, 
             info_fnc=self.info_func,
             curr_tool=self.curr_tool,
-            table_fnc=printer
+        )
+
+        self.table_class = self.TableClass(
+            root=root,
+            arr_data=(), 
+            tools=[]
         )
 
         self.canvas.bind("<Button-1>", self.on_press)
@@ -209,6 +214,9 @@ class MainClass(metaclass=SingletonMeta):
 if __name__ == "__main__":
     root = Tk()
     app1 = MainClass(root)
-    app2 = MainClass(root)
-    print(app1 is app2)
+
+    # check
+    # app2 = MainClass(root)
+    # print(app1 is app2)
+
     root.mainloop()
