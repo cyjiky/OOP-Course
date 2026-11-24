@@ -3,6 +3,10 @@ from typing import List, Dict, NamedTuple, Tuple
 from tkinter import *
 from tkinter import ttk
 
+# 1 - CHOISE
+# 2 - REMOVE
+VALUE: int = 0
+
 class TupleCoordData(NamedTuple):
     tool: str = ''
     x1: int = 0
@@ -40,8 +44,12 @@ class TableClass:
         root, 
         coords: Tuple[int, int, int, int] = (0, 0, 0, 0), 
         tools: List = None,
+        on_select = None,
+        on_remove = None,
     ):
         self.root = root
+        self.on_select = on_select
+        self.on_remove = on_remove
 
         self.window = Toplevel(root)
         self.window.title("Таблиця")
@@ -77,6 +85,16 @@ class TableClass:
 
         self.tree.grid(row=0, column=0, sticky="nsew")
         self.scrollbar.grid(row=0, column=1, sticky="ns")
+
+        if VALUE == 1:
+            self.tree.bind("<<TreeviewSelect>>", self.item_selected)
+        elif VALUE == 2:
+            self.tree.bind("<<TreeviewSelect>>", self.item_removed)
+        else:
+            self.tree.bind("<<TreeviewSelect>>", self.item_selected)
+            self.tree.bind("<Delete>", self.item_removed)
+            # self.tree.bind("<BackSpace>", self.item_removed)
+
 
         self.main_func()
 
@@ -129,3 +147,25 @@ class TableClass:
             self.hide()
         else:
             self.show()
+
+    def item_selected(self, event=None) -> None:
+        selected = self.tree.selection()
+        if not selected:
+            return
+        item_id = selected[0]
+        values = self.tree.item(item_id, 'values')
+        index = self.tree.index(item_id)
+        if self.on_select:
+            self.on_select(index, values)
+
+    def item_removed(self, event=None) -> None:
+        selected = self.tree.selection()
+        if not selected:
+            return
+        item_id = selected[0]
+        index = self.tree.index(item_id)
+        if 0 <= index < len(self.arr):
+            del self.arr[index]
+        self.tree.delete(item_id)
+        if self.on_remove:
+            self.on_remove(index)

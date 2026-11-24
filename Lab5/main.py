@@ -89,7 +89,9 @@ class MainClass(metaclass=SingletonMeta):
         self.table_class = TableClass(
             root=root,
             coords=(0, 0, 0, 0),
-            tools=[]
+            tools=[],
+            on_select=self.highlight_object,
+            on_remove=self.remove_object
         )
 
         self.menu_class = MenuClass(
@@ -131,7 +133,45 @@ class MainClass(metaclass=SingletonMeta):
     def info_func(self) -> None:
         InfoWindow(dsmiss=self.dismiss) 
 
+    def highlight_object(self, index: int, values: tuple) -> None:
+        self.canvas.delete("highlight")
+        if not values or len(values) < 5:
+            return
+        
+        tool = str(values[0])
+        x1, y1, x2, y2 = int(values[1]), int(values[2]), int(values[3]), int(values[4])
+        
+        if tool == 'Еліпс':
+            dx2 = 2 * x1 - x2
+            dy2 = 2 * y1 - y2
+            min_x, max_x = min(x2, dx2), max(x2, dx2)
+            min_y, max_y = min(y2, dy2), max(y2, dy2)
+        elif tool == 'Куб':
+            min_x, max_x = min(x1, x2) - 5, max(x1, x2) + 20
+            min_y, max_y = min(y1, y2) - 20, max(y1, y2) + 5
+        else:
+            min_x, max_x = min(x1, x2), max(x1, x2)
+            min_y, max_y = min(y1, y2), max(y1, y2)
+
+        padding = 6
+        self.canvas.create_rectangle(
+            min_x - padding, min_y - padding,
+            max_x + padding, max_y + padding,
+            outline="red", width=2, dash=(4, 2), tags="highlight"
+        )
+
+    def remove_object(self, index: int) -> None:
+        self.canvas.delete("highlight")
+        self.storage.remove(index)
+        self.redraw_all()
+
+    def redraw_all(self) -> None:
+        self.canvas.delete('all')
+        for shape in self.storage:
+            shape.draw(self.canvas)
+
     def on_press(self, new: Event[Canvas]) -> None: 
+        self.canvas.delete("highlight")
         self.start_x, self.start_y = new.x, new.y
         self.is_drawing = True
 

@@ -45,5 +45,10 @@ class Storage:
     def __iter__(self) -> Iterator[PointsShape]:
         return iter(self._shapes)
 
+    def remove(self, index: int) -> PointsShape | None:
+        if 0 <= index < len(self._shapes):
+            return self._shapes.pop(index)
+        return None
+
     def clear(self) -> None:
         self._shapes.clear()
